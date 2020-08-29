@@ -18,6 +18,7 @@ public class MainVerticle extends AbstractVerticle {
     
     router.route().handler(BodyHandler.create()); 
 
+    router.route().handler(this::rootHandler);
     router.get("/user").handler(this::getUsers);
     router.get("/user/:id").handler(this::getById);
 
@@ -31,17 +32,21 @@ public class MainVerticle extends AbstractVerticle {
     });
   }
 
+  private void rootHandler(RoutingContext context){
+    context.put("name", "하재현").next();
+  }
+
   private void getUsers(RoutingContext context) {
     context.response()
       .setStatusCode(200)                
       .putHeader("content-type", "text/plain; charset=utf-8")
-      .end("Got Users!");
+      .end("Got Users! " + "By " + context.get("name"));
   }
   private void getById(RoutingContext context) {
     String id = context.pathParam("id");
     context.response()
       .setStatusCode(200)                
       .putHeader("content-type", "text/plain; charset=utf-8")
-      .end("Got User " + id + " !" );
+      .end("Got User " + id + " !" + "By " + context.get("name"));
   }
 }
